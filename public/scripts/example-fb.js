@@ -1,31 +1,36 @@
-// const data = [
-//   {id: 1, author: "Pete Hunt", text: "This is one comment"},
-//   {id: 2, author: "Jordan Walke", text: "This is *another* comment"}
-// ];
+/**
+ * This file provided by Facebook is for non-commercial testing and evaluation
+ * purposes only. Facebook reserves all rights not expressly granted.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-const Comment = React.createClass({
+var Comment = React.createClass({
   rawMarkup: function() {
     var md = new Remarkable();
     var rawMarkup = md.render(this.props.children.toString());
     return { __html: rawMarkup };
   },
 
-  render: function()  {
-    // const md = new Remarkable();
+  render: function() {
     return (
       <div className="comment">
         <h2 className="commentAuthor">
           {this.props.author}
         </h2>
-        {md.render(this.props.children.toString())}
         <span dangerouslySetInnerHTML={this.rawMarkup()} />
       </div>
     );
   }
 });
 
-const CommentBox = React.createClass({
-    loadCommentsFromServer: function() {
+var CommentBox = React.createClass({
+  loadCommentsFromServer: function() {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -59,14 +64,14 @@ const CommentBox = React.createClass({
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-},
+  },
   getInitialState: function() {
     return {data: []};
   },
-  componentDidMount: function(){
+  componentDidMount: function() {
     this.loadCommentsFromServer();
-  setInterval(this.loadCommentsFromServer, this.props.pollInterval);
-},
+    setInterval(this.loadCommentsFromServer, this.props.pollInterval);
+  },
   render: function() {
     return (
       <div className="commentBox">
@@ -78,15 +83,15 @@ const CommentBox = React.createClass({
   }
 });
 
-const CommentList = React.createClass ({
+var CommentList = React.createClass({
   render: function() {
-      const commentNodes = this.props.data.map(function(comment) {
-        return (
-          <Comment author={comment.author} key={comment.id}>
-            {comment.text}
-          </Comment>
-        );
-      });
+    var commentNodes = this.props.data.map(function(comment) {
+      return (
+        <Comment author={comment.author} key={comment.id}>
+          {comment.text}
+        </Comment>
+      );
+    });
     return (
       <div className="commentList">
         {commentNodes}
@@ -95,7 +100,7 @@ const CommentList = React.createClass ({
   }
 });
 
-const CommentForm = React.createClass ({
+var CommentForm = React.createClass({
   getInitialState: function() {
     return {author: '', text: ''};
   },
@@ -106,30 +111,30 @@ const CommentForm = React.createClass ({
     this.setState({text: e.target.value});
   },
   handleSubmit: function(e) {
-  e.preventDefault();
-  var author = this.state.author.trim();
-  var text = this.state.text.trim();
-  if (!text || !author) {
-    return;
-  }
-  this.props.onCommentSubmit({author: author, text: text});
-  this.setState({author: '', text: ''});
-},
+    e.preventDefault();
+    var author = this.state.author.trim();
+    var text = this.state.text.trim();
+    if (!text || !author) {
+      return;
+    }
+    this.props.onCommentSubmit({author: author, text: text});
+    this.setState({author: '', text: ''});
+  },
   render: function() {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
-      <input
-        type="text"
-        placeholder="Your name"
-        value={this.state.author}
-        onChange={this.handleAuthorChange}
-      />
-      <input
-        type="text"
-        placeholder="Say something.."
-        value={this.state.text}
-        onChange={this.handleTextChange}
-      />
+        <input
+          type="text"
+          placeholder="Your name"
+          value={this.state.author}
+          onChange={this.handleAuthorChange}
+        />
+        <input
+          type="text"
+          placeholder="Say something..."
+          value={this.state.text}
+          onChange={this.handleTextChange}
+        />
         <input type="submit" value="Post" />
       </form>
     );
@@ -137,6 +142,6 @@ const CommentForm = React.createClass ({
 });
 
 ReactDOM.render(
-<CommentBox url="/api/comments" pollInterval={2000} />,
+  <CommentBox url="/api/comments" pollInterval={2000} />,
   document.getElementById('content')
 );
